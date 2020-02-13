@@ -11,32 +11,32 @@ class Order
     /**
      * @var string
      */
-    public $Subscribe_Period;
+    public $subscribePeriod;
     /**
      * @var string
      */
-    public $RefOrder;
+    public $refOrder;
     /**
      * @var string
      */
-    public $Subscribe;
+    public $subscribe;
 
     /**
      * Order constructor.
-     * @param string $RefOrder
+     * @param string $refOrder
      * @param float $amount
-     * @param string|null $Subscribe
-     * @param string|null $Subscribe_Period
+     * @param string|null $subscribe
+     * @param string|null $subscribePeriod
      */
     public function __construct(
-        string $RefOrder,
+        string $refOrder,
         float $amount,
-        ?string $Subscribe = null,
-        ?string $Subscribe_Period = null
+        ?string $subscribe = null,
+        ?string $subscribePeriod = null
     ) {
-        $this->RefOrder = $RefOrder;
-        $this->Subscribe = $Subscribe;
-        $this->Subscribe_Period = $Subscribe_Period;
+        $this->refOrder = $refOrder;
+        $this->subscribe = $subscribe;
+        $this->subscribePeriod = $subscribePeriod;
         $this->amount = $amount;
     }
 }

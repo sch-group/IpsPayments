@@ -39,8 +39,8 @@ class Transaction
     public function toArray(): array
     {
         return [
-            "MerchantKey"=> '8545e3aa27ba62e0API5e3aa27ba62e1',
-            "RefOrder" => $this->order->RefOrder,
+            "MerchantKey"=> $this->shopSettings->merchantKey,
+            "RefOrder" => $this->order->refOrder,
             "amount" => $this->order->amount,
             "Customer_Name" => $this->customer->customerName,
             "Customer_Email" => $this->customer->customerEmail,

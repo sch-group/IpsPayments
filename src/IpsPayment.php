@@ -4,22 +4,12 @@ declare(strict_types=1);
 
 namespace SchGroup\IpsPayment;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\Log\{NullLogger, LoggerInterface};
 use GuzzleHttp\ClientInterface;
 
 class IpsPayment
 {
-    /**
-     * @var NullLogger
-     */
-    private $logger;
-
     const API_URL = "https://wws.ips-payment.com";
-    /**
-     * @var string
-     */
-    private $apiKey;
+
     /**
      * @var ClientInterface
      */
@@ -27,14 +17,11 @@ class IpsPayment
 
     /**
      * IpsPayment constructor.
-     * @param string $apiKey
      * @param ClientInterface $client
      */
-    public function __construct(string $apiKey, ClientInterface $client, LoggerInterface $logger)
+    public function __construct(ClientInterface $client)
     {
-        $this->apiKey = $apiKey;
         $this->client = $client;
-        $this->logger = $logger;
     }
 
 
