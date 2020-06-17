@@ -25,7 +25,7 @@ class ShopSettings
      * @param string|null $Integrated
      * @param string $lang
      */
-    public function __construct(string $merchantKey, string $Integrated = "NO", string $lang = 'en')
+    public function __construct(string $merchantKey, string $Integrated = "NO", string $lang = null)
     {
         $this->merchantKey = $merchantKey;
         $this->Integrated = $Integrated;

@@ -38,7 +38,7 @@ class Transaction
      */
     public function toArray(): array
     {
-        return [
+        $params = [
             "MerchantKey"=> $this->shopSettings->merchantKey,
             "RefOrder" => $this->order->refOrder,
             "amount" => $this->order->amount,
@@ -46,7 +46,11 @@ class Transaction
             "Customer_Email" => $this->customer->customerEmail,
             "Customer_Phone" => $this->customer->customerPhone,
             "Integrated" => $this->shopSettings->Integrated,
-            "lang" => $this->shopSettings->lang
         ];
+        if(!empty($this->shopSettings->lang)) {
+            $params["lang"] = $this->shopSettings->lang;
+        }
+
+        return $params;
     }
 }
