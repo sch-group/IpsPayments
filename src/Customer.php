@@ -7,15 +7,15 @@ class Customer
     /**
      * @var string
      */
-    public $customerName;
+    private $customerName;
     /**
      * @var string
      */
-    public $customerEmail;
+    private $customerEmail;
     /**
      * @var string
      */
-    public $customerPhone;
+    private $customerPhone;
 
     /**
      * Customer constructor.
@@ -31,5 +31,29 @@ class Customer
         $this->customerName = $customerName;
         $this->customerEmail = $customerEmail;
         $this->customerPhone = $customerPhone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerName(): string
+    {
+        return $this->customerName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerEmail(): ?string
+    {
+        return $this->customerEmail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerPhone(): ?string
+    {
+        return $this->customerPhone;
     }
 }

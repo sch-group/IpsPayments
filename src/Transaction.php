@@ -8,6 +8,7 @@ class Transaction
      * @var Customer
      */
     private $customer;
+
     /**
      * @var Order
      */
@@ -39,18 +40,42 @@ class Transaction
     public function toArray(): array
     {
         $params = [
-            "MerchantKey"=> $this->shopSettings->merchantKey,
-            "RefOrder" => $this->order->refOrder,
-            "amount" => $this->order->amount,
-            "Customer_Name" => $this->customer->customerName,
-            "Customer_Email" => $this->customer->customerEmail,
-            "Customer_Phone" => $this->customer->customerPhone,
-            "Integrated" => $this->shopSettings->Integrated,
+            "MerchantKey"=> $this->shopSettings->getMerchantKey(),
+            "RefOrder" => $this->order->getRefOrder(),
+            "amount" => $this->order->getAmount(),
+            "Customer_Name" => $this->customer->getCustomerName(),
+            "Customer_Email" => $this->customer->getCustomerEmail(),
+            "Customer_Phone" => $this->customer->getCustomerPhone(),
+            "Integrated" => $this->shopSettings->getIntegrated(),
         ];
-        if(!empty($this->shopSettings->lang)) {
-            $params["lang"] = $this->shopSettings->lang;
+        if(!empty($this->shopSettings->getLang())) {
+            $params["lang"] = $this->shopSettings->getLang();
         }
 
         return $params;
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @return Order
+     */
+    public function getOrder(): Order
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return ShopSettings
+     */
+    public function getShopSettings(): ShopSettings
+    {
+        return $this->shopSettings;
     }
 }

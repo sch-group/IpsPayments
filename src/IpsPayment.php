@@ -8,8 +8,6 @@ use GuzzleHttp\ClientInterface;
 
 class IpsPayment
 {
-    const API_URL = "https://wws.ips-payment.com";
-
     /**
      * @var ClientInterface
      */
@@ -31,7 +29,7 @@ class IpsPayment
      */
     public function buildLink(Transaction $transaction): string
     {
-        return self::API_URL .'?'. http_build_query($transaction->toArray());
+        return $transaction->getShopSettings()->getApiHost() .'?'. http_build_query($transaction->toArray());
     }
     
 }

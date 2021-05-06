@@ -7,19 +7,19 @@ class Order
     /**
      * @var float
      */
-    public $amount;
+    private $amount;
     /**
      * @var string
      */
-    public $subscribePeriod;
+    private $subscribePeriod;
     /**
      * @var string
      */
-    public $refOrder;
+    private $refOrder;
     /**
      * @var string
      */
-    public $subscribe;
+    private $subscribe;
 
     /**
      * Order constructor.
@@ -33,10 +33,45 @@ class Order
         float $amount,
         ?string $subscribe = null,
         ?string $subscribePeriod = null
-    ) {
+    )
+    {
         $this->refOrder = $refOrder;
         $this->subscribe = $subscribe;
         $this->subscribePeriod = $subscribePeriod;
         $this->amount = $amount;
     }
+
+    /**
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubscribePeriod(): ?string
+    {
+        return $this->subscribePeriod;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefOrder(): string
+    {
+        return $this->refOrder;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubscribe(): ?string
+    {
+        return $this->subscribe;
+    }
+
+
 }
