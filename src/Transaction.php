@@ -4,34 +4,30 @@ namespace SchGroup\IpsPayment;
 
 class Transaction
 {
-    /**
-     * @var Customer
-     */
-    private $customer;
+    private const LEASE = 1;
 
-    /**
-     * @var Order
-     */
-    private $order;
-    /**
-     * @var ShopSettings
-     */
-    private $shopSettings;
+    private Customer $customer;
+    private Order $order;
+    private ShopSettings $shopSettings;
+    private Callback $callback;
 
     /**
      * Transaction constructor.
      * @param Order $order
      * @param Customer $customer
      * @param ShopSettings $shopSettings
+     * @param Callback $callback
      */
     public function __construct(
         Order $order,
         Customer $customer,
-        ShopSettings $shopSettings
+        ShopSettings $shopSettings,
+        Callback $callback
     ) {
         $this->customer = $customer;
         $this->order = $order;
         $this->shopSettings = $shopSettings;
+        $this->callback = $callback;
     }
 
     /**
@@ -40,17 +36,23 @@ class Transaction
     public function toArray(): array
     {
         $params = [
-            "MerchantKey"=> $this->shopSettings->getMerchantKey(),
-            "RefOrder" => $this->order->getRefOrder(),
-            "amount" => $this->order->getAmount(),
-            "Customer_Name" => $this->customer->getCustomerName(),
-            "Customer_Email" => $this->customer->getCustomerEmail(),
-            "Customer_Phone" => $this->customer->getCustomerPhone(),
-            "Integrated" => $this->shopSettings->getIntegrated(),
+            'MerchantKey'        => $this->shopSettings->getMerchantKey(),
+            'RefOrder'           => $this->order->getRefOrder(),
+            'amount'             => $this->order->getAmount(),
+            'Customer_Name'      => $this->customer->getCustomerName(),
+            'Customer_Email'     => $this->customer->getCustomerEmail(),
+            'Customer_Phone'     => $this->customer->getCustomerPhone(),
+            'Customer_FirstName' => null,
+            'Lease'              => self::LEASE,
         ];
-        if(!empty($this->shopSettings->getLang())) {
-            $params["lang"] = $this->shopSettings->getLang();
+
+        if (!empty($this->shopSettings->getLang())) {
+            $params['lang'] = $this->shopSettings->getLang();
         }
+
+        $this->callback->getSuccess()  && $params['urlOK']  = $this->callback->getSuccess();
+        $this->callback->getFailed()   && $params['urlKO']  = $this->callback->getFailed();
+        $this->callback->getCallback() && $params['urlIPN'] = $this->callback->getCallback();
 
         return $params;
     }

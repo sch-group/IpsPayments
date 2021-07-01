@@ -4,18 +4,9 @@ namespace SchGroup\IpsPayment;
 
 class Customer
 {
-    /**
-     * @var string
-     */
-    private $customerName;
-    /**
-     * @var string
-     */
-    private $customerEmail;
-    /**
-     * @var string
-     */
-    private $customerPhone;
+    private string $customerName;
+    private ?string $customerEmail;
+    private ?string $customerPhone;
 
     /**
      * Customer constructor.

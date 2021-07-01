@@ -4,46 +4,23 @@ namespace SchGroup\IpsPayment;
 
 class ShopSettings
 {
+    private const TRANSACTION_PATH = 'init_transactions';
 
-    /**
-     * @var string
-     */
-    private $Integrated;
-
-    /**
-     * @var string
-     */
-    private $lang;
-    /**
-     * @var string
-     */
-    private $merchantKey;
-    /**
-     * @var string
-     */
-    private $apiHost;
+    private ?string $lang;
+    private string $merchantKey;
+    private string $apiHost;
 
     /**
      * ShopSettings constructor.
-     * @param string $merchantKey
-     * @param string $apiHost
-     * @param string|null $Integrated
+     * @param string      $merchantKey
+     * @param string      $apiHost
      * @param string|null $lang
      */
-    public function __construct(string $merchantKey, string $apiHost, string $Integrated = "NO", string $lang = null)
+    public function __construct(string $merchantKey, string $apiHost, string $lang = null)
     {
         $this->merchantKey = $merchantKey;
-        $this->Integrated = $Integrated;
         $this->lang = $lang;
         $this->apiHost = $apiHost;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIntegrated(): string
-    {
-        return $this->Integrated;
     }
 
     /**
@@ -68,5 +45,13 @@ class ShopSettings
     public function getApiHost(): string
     {
         return $this->apiHost;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransitionPath(): string
+    {
+        return $this->apiHost . '/' . self::TRANSACTION_PATH;
     }
 }
