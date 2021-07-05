@@ -9,18 +9,21 @@ class ShopSettings
     private ?string $lang;
     private string $merchantKey;
     private string $apiHost;
+    private string $secretKey;
 
     /**
      * ShopSettings constructor.
      * @param string      $merchantKey
      * @param string      $apiHost
+     * @param string      $secretKey
      * @param string|null $lang
      */
-    public function __construct(string $merchantKey, string $apiHost, string $lang = null)
+    public function __construct(string $merchantKey, string $apiHost, string $secretKey, string $lang = null)
     {
         $this->merchantKey = $merchantKey;
         $this->lang = $lang;
         $this->apiHost = $apiHost;
+        $this->secretKey = $secretKey;
     }
 
     /**
@@ -53,5 +56,13 @@ class ShopSettings
     public function getTransitionPath(): string
     {
         return $this->apiHost . '/' . self::TRANSACTION_PATH;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecretKey(): string
+    {
+        return $this->secretKey;
     }
 }

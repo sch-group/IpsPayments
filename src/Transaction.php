@@ -4,8 +4,6 @@ namespace SchGroup\IpsPayment;
 
 class Transaction
 {
-    private const LEASE = 1;
-
     private Customer $customer;
     private Order $order;
     private ShopSettings $shopSettings;
@@ -36,23 +34,19 @@ class Transaction
     public function toArray(): array
     {
         $params = [
-            'MerchantKey'        => $this->shopSettings->getMerchantKey(),
-            'RefOrder'           => $this->order->getRefOrder(),
-            'amount'             => $this->order->getAmount(),
-            'Customer_Name'      => $this->customer->getCustomerName(),
-            'Customer_Email'     => $this->customer->getCustomerEmail(),
-            'Customer_Phone'     => $this->customer->getCustomerPhone(),
-            'Customer_FirstName' => null,
-            'Lease'              => self::LEASE,
+            'MerchantKey' => $this->shopSettings->getMerchantKey(),
+            'amount'      => (string)$this->order->getAmount(),
+            'RefOrder'    => $this->order->getRefOrder(),
         ];
 
-        if (!empty($this->shopSettings->getLang())) {
-            $params['lang'] = $this->shopSettings->getLang();
-        }
-
-        $this->callback->getSuccess()  && $params['urlOK']  = $this->callback->getSuccess();
-        $this->callback->getFailed()   && $params['urlKO']  = $this->callback->getFailed();
-        $this->callback->getCallback() && $params['urlIPN'] = $this->callback->getCallback();
+        $this->customer->getName()      && $params['Customer_Name']      = $this->customer->getName();
+        $this->customer->getFirstName() && $params['Customer_FirstName'] = $this->customer->getFirstName();
+        $this->customer->getEmail()     && $params['Customer_Email']     = (string)$this->customer->getEmail();
+        $this->customer->getPhone()     && $params['Customer_Phone']     = (string)$this->customer->getPhone();
+        $this->shopSettings->getLang()  && $params['lang']               = (string)$this->shopSettings->getLang();
+        $this->callback->getCallback()  && $params['urlIPN']             = (string)$this->callback->getCallback();
+        $this->callback->getSuccess()   && $params['urlOK']              = (string)$this->callback->getSuccess();
+        $this->callback->getFailed()    && $params['urlKO']              = (string)$this->callback->getFailed();
 
         return $params;
     }
