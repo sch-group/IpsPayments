@@ -4,22 +4,10 @@ namespace SchGroup\IpsPayment;
 
 class Order
 {
-    /**
-     * @var float
-     */
-    private $amount;
-    /**
-     * @var string
-     */
-    private $subscribePeriod;
-    /**
-     * @var string
-     */
-    private $refOrder;
-    /**
-     * @var string
-     */
-    private $subscribe;
+    private float $amount;
+    private ?string $subscribePeriod;
+    private string $refOrder;
+    private ?string $subscribe;
 
     /**
      * Order constructor.
@@ -33,8 +21,7 @@ class Order
         float $amount,
         ?string $subscribe = null,
         ?string $subscribePeriod = null
-    )
-    {
+    ) {
         $this->refOrder = $refOrder;
         $this->subscribe = $subscribe;
         $this->subscribePeriod = $subscribePeriod;
@@ -72,6 +59,4 @@ class Order
     {
         return $this->subscribe;
     }
-
-
 }

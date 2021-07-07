@@ -4,34 +4,28 @@ namespace SchGroup\IpsPayment;
 
 class Transaction
 {
-    /**
-     * @var Customer
-     */
-    private $customer;
-
-    /**
-     * @var Order
-     */
-    private $order;
-    /**
-     * @var ShopSettings
-     */
-    private $shopSettings;
+    private Customer $customer;
+    private Order $order;
+    private ShopSettings $shopSettings;
+    private Callback $callback;
 
     /**
      * Transaction constructor.
      * @param Order $order
      * @param Customer $customer
      * @param ShopSettings $shopSettings
+     * @param Callback $callback
      */
     public function __construct(
         Order $order,
         Customer $customer,
-        ShopSettings $shopSettings
+        ShopSettings $shopSettings,
+        Callback $callback
     ) {
         $this->customer = $customer;
         $this->order = $order;
         $this->shopSettings = $shopSettings;
+        $this->callback = $callback;
     }
 
     /**
@@ -40,17 +34,19 @@ class Transaction
     public function toArray(): array
     {
         $params = [
-            "MerchantKey"=> $this->shopSettings->getMerchantKey(),
-            "RefOrder" => $this->order->getRefOrder(),
-            "amount" => $this->order->getAmount(),
-            "Customer_Name" => $this->customer->getCustomerName(),
-            "Customer_Email" => $this->customer->getCustomerEmail(),
-            "Customer_Phone" => $this->customer->getCustomerPhone(),
-            "Integrated" => $this->shopSettings->getIntegrated(),
+            'MerchantKey' => $this->shopSettings->getMerchantKey(),
+            'amount'      => (string)$this->order->getAmount(),
+            'RefOrder'    => $this->order->getRefOrder(),
         ];
-        if(!empty($this->shopSettings->getLang())) {
-            $params["lang"] = $this->shopSettings->getLang();
-        }
+
+        $this->customer->getName()      && $params['Customer_Name']      = $this->customer->getName();
+        $this->customer->getFirstName() && $params['Customer_FirstName'] = $this->customer->getFirstName();
+        $this->customer->getEmail()     && $params['Customer_Email']     = (string)$this->customer->getEmail();
+        $this->customer->getPhone()     && $params['Customer_Phone']     = (string)$this->customer->getPhone();
+        $this->shopSettings->getLang()  && $params['lang']               = (string)$this->shopSettings->getLang();
+        $this->callback->getCallback()  && $params['urlIPN']             = (string)$this->callback->getCallback();
+        $this->callback->getSuccess()   && $params['urlOK']              = (string)$this->callback->getSuccess();
+        $this->callback->getFailed()    && $params['urlKO']              = (string)$this->callback->getFailed();
 
         return $params;
     }

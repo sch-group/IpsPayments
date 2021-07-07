@@ -4,56 +4,55 @@ namespace SchGroup\IpsPayment;
 
 class Customer
 {
-    /**
-     * @var string
-     */
-    private $customerName;
-    /**
-     * @var string
-     */
-    private $customerEmail;
-    /**
-     * @var string
-     */
-    private $customerPhone;
+    private string  $firstName;
+    private string  $name;
+    private ?string $email;
+    private ?string $phone;
 
     /**
      * Customer constructor.
-     * @param string $customerName
-     * @param string|null $customerEmail
-     * @param string|null $customerPhone
+     * @param string      $firstName
+     * @param string      $name
+     * @param string|null $email
+     * @param string|null $phone
      */
-    public function __construct(
-        string $customerName,
-        ?string $customerEmail = null,
-        ?string $customerPhone = null
-    ) {
-        $this->customerName = $customerName;
-        $this->customerEmail = $customerEmail;
-        $this->customerPhone = $customerPhone;
+    public function __construct(string $name, string $firstName, ?string $email = null, ?string $phone = null)
+    {
+        $this->firstName = $firstName;
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
     }
 
     /**
      * @return string
      */
-    public function getCustomerName(): string
+    public function getFirstName(): string
     {
-        return $this->customerName;
+        return $this->firstName;
     }
 
     /**
      * @return string
      */
-    public function getCustomerEmail(): ?string
+    public function getName(): string
     {
-        return $this->customerEmail;
+        return $this->name;
     }
 
     /**
      * @return string
      */
-    public function getCustomerPhone(): ?string
+    public function getEmail(): ?string
     {
-        return $this->customerPhone;
+        return $this->email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): ?string
+    {
+        return $this->phone;
     }
 }
