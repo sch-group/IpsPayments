@@ -6,22 +6,31 @@ namespace SchGroup\IpsPayment;
 
 use Exception;
 use JsonException;
+use SchGroup\IpsPayment\Transactions\StatusTransaction;
+use SchGroup\IpsPayment\Transactions\GetLinkTransaction;
+use SchGroup\IpsPayment\Transactions\QueryTransactionInterface;
 
 class IpsPayment
 {
-    private const HEADERS = ['Content-Type: application/x-www-form-urlencoded'];
+    private const POST_HEADERS = [
+        'Content-Type: application/x-www-form-urlencoded',
+    ];
+    private const GET_HEADERS = [
+        'Accept: application/json',
+        'Content-Type: application/x-www-form-urlencoded',
+    ];
 
     /**
-     * @param Transaction $transaction
+     * @param GetLinkTransaction $transaction
      * @return string
      * @throws JsonException
      * @throws Exception
      */
-    public function buildLink(Transaction $transaction): string
+    public function getLink(GetLinkTransaction $transaction): string
     {
-        $requestBody = $this->prepareParams($transaction);
-        $requestLink = $transaction->getShopSettings()->getTransitionPath();
-        $response = $this->sendRequest($requestLink, $requestBody);
+        $requestBody = $this->generateBody($transaction);
+        $requestLink = $transaction->getShopSettings()->getTransitionCreatePath();
+        $response = $this->sendPostRequest($requestLink, $requestBody);
 
         $this->prepareResponse($response);
 
@@ -29,22 +38,38 @@ class IpsPayment
     }
 
     /**
-     * @param Transaction $transaction
+     * @param $transaction $transaction
+     * @return string
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function getStatus(StatusTransaction $transaction): string
+    {
+        $requestBody = $this->generateBody($transaction);
+        $requestLink = $transaction->getShopSettings()->getTransitionGetPath();
+        $response = $this->sendGetRequest($requestLink, $requestBody);
+
+        $this->prepareResponse($response);;
+
+        return $response['DirectLinkIs'];
+    }
+
+    /**
+     * @param QueryTransactionInterface $transaction
      * @return array
      */
-    private function prepareParams(Transaction $transaction): array
+    private function generateBody(QueryTransactionInterface $transaction): array
     {
         $paramsToString = implode('!', array_values($transaction->toArray()));
         $paramsToString .= '!' . $transaction->getShopSettings()->getSecretKey();
         $paramsToString .= '|' . $transaction->getShopSettings()->getSecretKey();
 
         return array_merge($transaction->toArray(), [
-            'SHA' => hash('sha512', base64_encode($paramsToString))
+            'SHA'=> hash('sha512', base64_encode($paramsToString)),
         ]);
     }
 
     /**
-     * @param string $link
      * @return array
      * ```php
      *  [
@@ -59,17 +84,50 @@ class IpsPayment
      *      'ErrorDescription' => '<error-description>',
      *  ]
      * ```
-     * @throws Exception
      * @throws JsonException
+     * @throws Exception
      */
-    private function sendRequest(string $link, array $body): array
+    private function sendPostRequest(string $link, array $body): array
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $link . '/');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($body));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, self::HEADERS);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, self::POST_HEADERS);
+        $result = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new Exception('Curl request error: ' . $ch);
+        }
+
+        return json_decode($result, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @return array
+     * ```php
+     *  [
+     *      'Code'                     => '200',
+     *      'Method'                   => 'GET",
+     *      'Url_To_Redirect_Customer' => '<url-payment-form-web>',
+     *      'SACS'                     => '<token>',
+     *      'DirectLinkIs'             => '<full-uri-redirect>',
+     *  ]
+     *  [
+     *      'ErrorCode'        => '<error-code>',
+     *      'ErrorDescription' => '<error-description>',
+     *  ]
+     * ```
+     * @throws JsonException
+     * @throws Exception
+     */
+    private function sendGetRequest(string $link, array $body): array
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $link . '/?' . http_build_query($body));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, self::GET_HEADERS);
         $result = curl_exec($ch);
 
         if (curl_errno($ch)) {

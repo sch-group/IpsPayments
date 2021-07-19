@@ -4,7 +4,8 @@ namespace SchGroup\IpsPayment;
 
 class ShopSettings
 {
-    private const TRANSACTION_PATH = 'init_transactions';
+    private const TRANSACTION_CREATE_PATH = 'init_transactions';
+    private const TRANSACTION_GET_PATH    = 'transactions';
 
     private ?string $lang;
     private string $merchantKey;
@@ -53,9 +54,17 @@ class ShopSettings
     /**
      * @return string
      */
-    public function getTransitionPath(): string
+    public function getTransitionCreatePath(): string
     {
-        return $this->apiHost . '/' . self::TRANSACTION_PATH;
+        return $this->apiHost . '/' . self::TRANSACTION_CREATE_PATH;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransitionGetPath(): string
+    {
+        return $this->apiHost . '/' . self::TRANSACTION_GET_PATH;
     }
 
     /**

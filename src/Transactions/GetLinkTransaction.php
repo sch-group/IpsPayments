@@ -1,8 +1,13 @@
 <?php
 
-namespace SchGroup\IpsPayment;
+namespace SchGroup\IpsPayment\Transactions;
 
-class Transaction
+use SchGroup\IpsPayment\Order;
+use SchGroup\IpsPayment\Customer;
+use SchGroup\IpsPayment\Callback;
+use SchGroup\IpsPayment\ShopSettings;
+
+class GetLinkTransaction implements QueryTransactionInterface
 {
     private Customer $customer;
     private Order $order;

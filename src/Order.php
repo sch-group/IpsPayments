@@ -8,6 +8,7 @@ class Order
     private ?string $subscribePeriod;
     private string $refOrder;
     private ?string $subscribe;
+    private ?string $paymentId;
 
     /**
      * Order constructor.
@@ -15,17 +16,20 @@ class Order
      * @param float $amount
      * @param string|null $subscribe
      * @param string|null $subscribePeriod
+     * @param string|null $paymentId
      */
     public function __construct(
         string $refOrder,
         float $amount,
         ?string $subscribe = null,
-        ?string $subscribePeriod = null
+        ?string $subscribePeriod = null,
+        ?string $paymentId = null
     ) {
         $this->refOrder = $refOrder;
         $this->subscribe = $subscribe;
         $this->subscribePeriod = $subscribePeriod;
         $this->amount = $amount;
+        $this->paymentId = $paymentId;
     }
 
     /**
@@ -37,7 +41,7 @@ class Order
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSubscribePeriod(): ?string
     {
@@ -53,10 +57,18 @@ class Order
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSubscribe(): ?string
     {
         return $this->subscribe;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentId(): ?string
+    {
+        return $this->paymentId;
     }
 }
