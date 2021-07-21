@@ -12,9 +12,15 @@ use SchGroup\IpsPayment\Transactions\QueryTransactionInterface;
 
 class IpsPayment
 {
+    public const STATUS_APPROVED         = 2;
+    public const STATUS_UNDER_PROCESSING = 6;
+    public const STATUS_CANCELLED        = 7;
+    public const STATUS_DECLINED         = 8;
+
     private const POST_HEADERS = [
         'Content-Type: application/x-www-form-urlencoded',
     ];
+
     private const GET_HEADERS = [
         'Accept: application/json',
         'Content-Type: application/x-www-form-urlencoded',
@@ -39,19 +45,18 @@ class IpsPayment
 
     /**
      * @param $transaction $transaction
-     * @return string
+     * @return int
      * @throws JsonException
      * @throws Exception
      */
-    public function getStatus(StatusTransaction $transaction): string
+    public function getStatus(StatusTransaction $transaction): int
     {
         $requestBody = $this->generateBody($transaction);
         $requestLink = $transaction->getShopSettings()->getTransitionGetPath();
         $response = $this->sendGetRequest($requestLink, $requestBody);
+        $this->prepareResponse($response);
 
-        $this->prepareResponse($response);;
-
-        return $response['DirectLinkIs'];
+        return (int)$response['Transaction_Status']['State'];
     }
 
     /**
@@ -143,7 +148,7 @@ class IpsPayment
      */
     private function prepareResponse(array $response): void
     {
-        if (!isset($response['Code'])) {
+        if (isset($response['ErrorCode'])) {
             throw new Exception('ips request error: ' . $response['ErrorDescription']);
         }
     }
