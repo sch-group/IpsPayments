@@ -12,11 +12,6 @@ use SchGroup\IpsPayment\Transactions\QueryTransactionInterface;
 
 class IpsPayment
 {
-    public const STATUS_APPROVED         = 2;
-    public const STATUS_UNDER_PROCESSING = 6;
-    public const STATUS_CANCELLED        = 7;
-    public const STATUS_DECLINED         = 8;
-
     private const POST_HEADERS = [
         'Content-Type: application/x-www-form-urlencoded',
     ];
@@ -54,7 +49,6 @@ class IpsPayment
         $requestBody = $this->generateBody($transaction);
         $requestLink = $transaction->getShopSettings()->getTransitionGetPath();
         $response = $this->sendGetRequest($requestLink, $requestBody);
-        $this->prepareResponse($response);
 
         return (int)$response['Transaction_Status']['State'];
     }
@@ -79,7 +73,7 @@ class IpsPayment
      * ```php
      *  [
      *      'Code'                     => '200',
-     *      'Method'                   => 'GET",
+     *      'Method'                   => 'GET',
      *      'Url_To_Redirect_Customer' => '<url-payment-form-web>',
      *      'SACS'                     => '<token>',
      *      'DirectLinkIs'             => '<full-uri-redirect>',
@@ -113,15 +107,51 @@ class IpsPayment
      * @return array
      * ```php
      *  [
-     *      'Code'                     => '200',
-     *      'Method'                   => 'GET",
-     *      'Url_To_Redirect_Customer' => '<url-payment-form-web>',
-     *      'SACS'                     => '<token>',
-     *      'DirectLinkIs'             => '<full-uri-redirect>',
-     *  ]
-     *  [
-     *      'ErrorCode'        => '<error-code>',
-     *      'ErrorDescription' => '<error-description>',
+     *      'Created'           => '2020-08-26 12:03:35',
+     *      'Merchant_Order_Id' => '1598436214-7790-D',
+     *      'Financial'         =>
+     *          'Total_Paid' => '49.99',
+     *          'Total_Fees' => '1.00',
+     *          'Total_Net'  => '48.99',
+     *          'Currency'   => 'EUR',
+     *      ],
+     *      'Customer' => [
+     *          'Ip_Client_Transaction' => '92.184.105.244',
+     *          'Ips_ClientID'          => 'AS-9473029775382228',
+     *          'Client'                => [
+     *              'Name'        => 'client name',
+     *              'Firstname'   => 'client first name',
+     *              'Email'       => 'client@email.com',
+     *              'Phone'       => '',
+     *              'Original_IP' => '176.180.84.22',
+     *              'Known_since' => '2020-08-25 21:21:12',
+     *          ],
+     *      ],
+     *      'Bank' => [
+     *          'Internal_IPS_Id' => '150-26082020-120336',
+     *          'Transaction ID'  => 'TX-3165299470680365,
+     *      ],
+     *      'Card' => [
+     *          'Type'              => 'MASTERCARD',
+     *          'Number'            => '0000XXXXXXXX0000',
+     *          'Expire'            => '10/2020',
+     *          'Id'                => 'CC-4645456011192904',
+     *          'Recurring_Capable' => 'yes', //yes = register Id for charge with ID
+     *      ],
+     *      'ProcessIPN' => [
+     *          'Processed'        => [
+     *              'state'      => '2',
+     *              'descriptor' => 'Ipn request successfully completed',
+     *          ],
+     *          'Return HTTP Code' => '200',
+     *          'Uri Call'         => 'https://www.mywebsite.com/notifypayment',
+     *      ],
+     *      'Transaction_Status' => [
+     *          'State'                 => '2',
+     *          'Description'           => 'Payment has been approved successfully',
+     *          'Bank_Code'             => '000000000',
+     *          'Bank_Code_Description' => 'APPROUVED',
+     *      ]
      *  ]
      * ```
      * @throws JsonException
